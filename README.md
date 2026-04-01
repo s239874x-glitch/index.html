@@ -1,8 +1,8 @@
-# wynn.github.i
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
+# wynn.github.io 東京農工大美術部へのようこそ！
 <title>東京農工大美術部へのようこそ！</title>
 </head>
 <body>
