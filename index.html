@@ -190,6 +190,10 @@ document.getElementById("gift").addEventListener("click", function(){
   // 少し間を作る
   setTimeout(()=>{
     box.classList.add("active");
+    // ←ここで再パース
+    if (window.twemoji) {
+    twemoji.parse(box);
+    }
   }, 100);
 
   // 揺れ
@@ -210,7 +214,6 @@ document.getElementById("gift").addEventListener("click", function(){
   }
 
 });
-twemoji.parse(document.body);
 </script>
 
 </body>
