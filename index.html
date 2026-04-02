@@ -210,10 +210,6 @@ document.getElementById("gift").addEventListener("click", function(){
     updateConfetti();    // 紙吹雪アップデート
   }, 100);
 
-  /* 紙吹雪の色 */
-  const colors = ["#e63946","#f1faee","#a8dadc","#457b9d","#ffbe0b"];
-  color: colors[Math.floor(Math.random()*colors.length)]
-
   setTimeout(()=>{
     wrapper.classList.add("shake");
   }, 600);
@@ -288,7 +284,7 @@ function updateConfetti(){
     if(p.life <= 0){
       particles.splice(i,1);
     }
-  });
+  }
 
   if(particles.length > 0){
     requestAnimationFrame(updateConfetti);
