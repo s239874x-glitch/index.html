@@ -245,17 +245,14 @@ const shareBtn = document.getElementById("shareBtn");
 
 shareBtn.onclick = async ()=>{
 
-  // UIまとめて非表示
-  uiLayer.style.display = "none";
-  box.style.transition = "none";       // アニメーション停止
-  box.style.opacity = "1";             // 完全表示
-  box.style.transform = "scale(1)";    // サイズ固定
+  // シェアボタンだけ非表示
+  shareBtn.style.display = "none";
 
   const canvas = await html2canvas(document.body, {
-   useCORS: true,
-  allowTaint: true,
-  backgroundColor: null,
-  scale: 2
+    useCORS: true,
+    allowTaint: true,
+    backgroundColor: null,  // 透過保持
+    scale: 2                // 高解像度
   });
   const img = canvas.toDataURL("image/png");
 
@@ -265,8 +262,9 @@ shareBtn.onclick = async ()=>{
   link.download = "myart.png";
   link.click();
 
-  // UI戻す
-  uiLayer.style.display = "flex";
+  // シェアボタンを戻す
+  shareBtn.style.display = "inline-block"; // または "flex" に合わせて調整
+};
 
   // Twitterへ
   const text = encodeURIComponent(
