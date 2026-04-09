@@ -249,8 +249,9 @@ shareBtn.onclick = async ()=>{
   // UIまとめて非表示
   uiLayer.style.display = "none";
 
-  // 少し待つ（←超重要：描画反映待ち）
-  await new Promise(r => setTimeout(r, 100));
+   // 👇これが最重要（2フレーム待つ）
+  await new Promise(r => requestAnimationFrame(r));
+  await new Promise(r => requestAnimationFrame(r));
 
   const canvas = await html2canvas(document.body);
 
