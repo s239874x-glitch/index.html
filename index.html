@@ -256,7 +256,7 @@ shareBtn.onclick = async () => {
   const screenshot = await html2canvas(document.body, {
     useCORS: true,
     backgroundColor: "#0a6b37",
-    scale: window.devicePixelRatio,  // ← ここ重要
+    scale: 1
     ignoreElements: (el) => el.id === "confetti" || el.id === "drawCanvas"
   });
 
@@ -315,7 +315,7 @@ function resize() {
   drawCanvas.style.height = window.innerHeight + "px";
 }
 resize();
-window.onresize=resize;
+window.addEventListener("resize", resize);
 
 /* ========= 紙吹雪 ========= */
 let particles=[];
