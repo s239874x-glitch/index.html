@@ -256,7 +256,7 @@ shareBtn.onclick = async () => {
   const screenshot = await html2canvas(document.body, {
     useCORS: true,
     backgroundColor: "#0a6b37",
-    scale: 1
+    scale: 1,
     ignoreElements: (el) => el.id === "confetti" || el.id === "drawCanvas"
   });
 
@@ -268,18 +268,19 @@ shareBtn.onclick = async () => {
 
   // 背景を描画
   ctx.drawImage(screenshot, 0, 0);
-  ctx.fillStyle = "white";
-  ctx.font = "bold 40px sans-serif";
-  ctx.textAlign = "center";
 
-  ctx.fillText("農工大美術部を見つけた！", finalCanvas.width/2, 60);
-  ctx.fillText("#農工大美術部", finalCanvas.width/2, finalCanvas.height - 40);
-
-  // 描画キャンバスをスケーリングして合成
   ctx.drawImage(
-    drawCanvas,
-    0, 0, drawCanvas.width, drawCanvas.height, // 元キャンバス
-    0, 0, finalCanvas.width, finalCanvas.height // 合成先
+  drawCanvas,
+  0,0,drawCanvas.width,drawCanvas.height,
+  0,0,finalCanvas.width,finalCanvas.height
+ );
+
+ ctx.fillStyle = "white";
+ ctx.font = "bold 40px sans-serif";
+ ctx.textAlign = "center";
+
+ ctx.fillText("農工大美術部を見つけた！", finalCanvas.width/2, 60);
+ ctx.fillText("#農工大美術部", finalCanvas.width/2, finalCanvas.height - 40);
   );
 
   const img = finalCanvas.toDataURL("image/png");
