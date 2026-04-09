@@ -254,6 +254,7 @@ requestAnimationFrame(updateConfetti);
 let drawEnabled=false;
 let drawing=false;
 let hue=0;
+let moved = false;
 
 const drawBtn=document.getElementById("drawToggle");
 const clearBtn=document.getElementById("clearBtn");
@@ -274,82 +275,84 @@ drawBtn.onclick=()=>{
 
 /* PC */
 drawCanvas.onmousedown=(e)=>{
-if(!drawEnabled)return;
-drawing=true;
+  if(!drawEnabled)return;
 
-const rect=drawCanvas.getBoundingClientRect();
-drawCtx.beginPath();
-drawCtx.moveTo(e.clientX-rect.left,e.clientY-rect.top);
+  drawing=true;
+  moved=false;
+
+  const rect=drawCanvas.getBoundingClientRect();
+  drawCtx.beginPath();
+  drawCtx.moveTo(e.clientX-rect.left,e.clientY-rect.top);
 };
-
-drawCanvas.addEventListener("click", (e)=>{
-  if(!drawEnabled) return;
-
-  const el = document.elementFromPoint(e.clientX, e.clientY);
-
-  // 自分自身(canvas)なら無視
-  if(el === drawCanvas) return;
-
-  // 下の要素にクリックを渡す
-  el.click();
-});
 
 drawCanvas.onmousemove=(e)=>{
-if(!drawing)return;
+  if(!drawing)return;
 
-const rect=drawCanvas.getBoundingClientRect();
-drawCtx.lineTo(e.clientX-rect.left,e.clientY-rect.top);
+  moved=true;
 
-drawCtx.strokeStyle=`hsl(${hue},100%,60%)`;
-hue+=2;
+  const rect=drawCanvas.getBoundingClientRect();
+  drawCtx.lineTo(e.clientX-rect.left,e.clientY-rect.top);
 
-drawCtx.lineWidth=3;
-drawCtx.lineCap="round";
-drawCtx.stroke();
+  drawCtx.strokeStyle=`hsl(${hue},100%,60%)`;
+  hue+=2;
+
+  drawCtx.lineWidth=3;
+  drawCtx.lineCap="round";
+  drawCtx.stroke();
 };
 
-drawCanvas.onmouseup=()=>drawing=false;
-drawCanvas.onmouseleave=()=>drawing=false;
+drawCanvas.onmouseup=(e)=>{
+  drawing=false;
+
+  // ★ここが重要
+  if(!moved){
+    const el=document.elementFromPoint(e.clientX,e.clientY);
+    if(el && el!==drawCanvas) el.click();
+  }
+};
 
 /* スマホ */
 drawCanvas.ontouchstart=(e)=>{
-if(!drawEnabled)return;
+  if(!drawEnabled)return;
 
-drawing=true;
-const rect=drawCanvas.getBoundingClientRect();
-const t=e.touches[0];
+  drawing=true;
+  moved=false;
 
-drawCtx.beginPath();
-drawCtx.moveTo(t.clientX-rect.left,t.clientY-rect.top);
+  const rect=drawCanvas.getBoundingClientRect();
+  const t=e.touches[0];
+
+  drawCtx.beginPath();
+  drawCtx.moveTo(t.clientX-rect.left,t.clientY-rect.top);
 };
 
-drawCanvas.addEventListener("touchend", (e)=>{
-  if(!drawEnabled) return;
-
-  const touch = e.changedTouches[0];
-  const el = document.elementFromPoint(touch.clientX, touch.clientY);
-
-  if(el === drawCanvas) return;
-
-  if(el) el.click();
-});
-
 drawCanvas.ontouchmove=(e)=>{
-if(!drawing)return;
+  if(!drawing)return;
 
-e.preventDefault();
+  moved=true;
+  e.preventDefault();
 
-const rect=drawCanvas.getBoundingClientRect();
-const t=e.touches[0];
+  const rect=drawCanvas.getBoundingClientRect();
+  const t=e.touches[0];
 
-drawCtx.lineTo(t.clientX-rect.left,t.clientY-rect.top);
+  drawCtx.lineTo(t.clientX-rect.left,t.clientY-rect.top);
 
-drawCtx.strokeStyle=`hsl(${hue},100%,60%)`;
-hue+=2;
+  drawCtx.strokeStyle=`hsl(${hue},100%,60%)`;
+  hue+=2;
 
-drawCtx.lineWidth=3;
-drawCtx.lineCap="round";
-drawCtx.stroke();
+  drawCtx.lineWidth=3;
+  drawCtx.lineCap="round";
+  drawCtx.stroke();
+};
+
+drawCanvas.ontouchend=(e)=>{
+  drawing=false;
+
+  // ★ここが重要
+  if(!moved){
+    const touch=e.changedTouches[0];
+    const el=document.elementFromPoint(touch.clientX,touch.clientY);
+    if(el && el!==drawCanvas) el.click();
+  }
 };
 
 drawCanvas.ontouchend=()=>drawing=false;
