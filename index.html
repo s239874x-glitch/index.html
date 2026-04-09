@@ -50,8 +50,10 @@ top:0;
 left:0;
 width:100%;
 height:100%;
+z-index:20;
+
+/* 通常はクリック透過 */
 pointer-events:none;
-z-index:5;
 }
   
 .tap{
@@ -194,7 +196,7 @@ vertical-align:middle;
     </p>
 
     <p class="small">
-    ※ ネタバラシはこっそりおねがいします🤫
+    ※ ✏️ 長押し or Shift + ドラッグで描けます
     </p>
 
   </div>
@@ -221,8 +223,14 @@ document.getElementById("gift").addEventListener("click", function(){
     if(window.twemoji){
       twemoji.parse(box);
     }
-    explodeConfetti();   // 紙吹雪爆発
-    updateConfetti();    // 紙吹雪アップデート
+    explodeConfetti();
+    updateConfetti();
+
+    // 3秒後に描画可能
+    setTimeout(()=>{
+      drawMode = true;
+    }, 3000);
+
   }, 100);
 
   setTimeout(()=>{
@@ -236,18 +244,10 @@ document.getElementById("gift").addEventListener("click", function(){
     audio.play().catch(()=>{});
   }
 
-  if(navigator.vibrate){
-    navigator.vibrate([100,50,100]);
-  }
-
 });
 
-/* 初期Twemoji */
-if(window.twemoji){
-  twemoji.parse(document.body);
-}
+/* ===== Canvas ===== */
 
-/* 爆発 */
 const canvas = document.getElementById("confetti");
 const ctx = canvas.getContext("2d");
 
@@ -255,6 +255,11 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 let particles = [];
+let drawMode = false;
+let drawing = false;
+let enableDraw = false;
+
+/* ===== 紙吹雪 ===== */
 
 function explodeConfetti(){
   const centerX = canvas.width / 2;
@@ -280,18 +285,13 @@ function explodeConfetti(){
 function updateConfetti(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
- for(let i = particles.length - 1; i >= 0; i--){
+  for(let i = particles.length - 1; i >= 0; i--){
     const p = particles[i];
     p.x += p.vx;
     p.y += p.vy;
-
-    // 重力
     p.vy += 0.1;
-
-    // 空気抵抗
     p.vx *= 0.99;
     p.vy *= 0.99;
-
     p.life--;
 
     ctx.fillStyle = p.color;
@@ -306,6 +306,95 @@ function updateConfetti(){
     requestAnimationFrame(updateConfetti);
   }
 }
+
+/* ===== 描画制御 ===== */
+
+// Shiftキー押してる間だけ描画モードON
+document.addEventListener("keydown", (e)=>{
+  if(e.key === "Shift"){
+    enableDraw = true;
+    canvas.style.pointerEvents = "auto";
+  }
+});
+
+document.addEventListener("keyup", (e)=>{
+  if(e.key === "Shift"){
+    enableDraw = false;
+    canvas.style.pointerEvents = "none";
+  }
+});
+
+/* ===== マウス描画 ===== */
+
+canvas.addEventListener("mousedown", (e)=>{
+  if(!drawMode || !enableDraw) return;
+  drawing = true;
+
+  const rect = canvas.getBoundingClientRect();
+  ctx.beginPath();
+  ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+});
+
+canvas.addEventListener("mousemove", (e)=>{
+  if(!drawing || !drawMode) return;
+
+  const rect = canvas.getBoundingClientRect();
+  ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+
+  ctx.strokeStyle = "white";
+  ctx.lineWidth = 3;
+  ctx.lineCap = "round";
+  ctx.stroke();
+});
+
+canvas.addEventListener("mouseup", ()=>{
+  drawing = false;
+});
+
+canvas.addEventListener("mouseleave", ()=>{
+  drawing = false;
+});
+
+/* ===== スマホ（長押しで描画） ===== */
+
+let touchTimer;
+
+canvas.addEventListener("touchstart", (e)=>{
+  if(!drawMode) return;
+
+  touchTimer = setTimeout(()=>{
+    enableDraw = true;
+    canvas.style.pointerEvents = "auto";
+    drawing = true;
+
+    const rect = canvas.getBoundingClientRect();
+    const t = e.touches[0];
+
+    ctx.beginPath();
+    ctx.moveTo(t.clientX - rect.left, t.clientY - rect.top);
+
+  }, 300); // 長押し判定
+});
+
+canvas.addEventListener("touchmove", (e)=>{
+  if(!drawing || !enableDraw) return;
+
+  const rect = canvas.getBoundingClientRect();
+  const t = e.touches[0];
+
+  ctx.lineTo(t.clientX - rect.left, t.clientY - rect.top);
+  ctx.strokeStyle = "white";
+  ctx.lineWidth = 3;
+  ctx.lineCap = "round";
+  ctx.stroke();
+});
+
+canvas.addEventListener("touchend", ()=>{
+  clearTimeout(touchTimer);
+  drawing = false;
+  enableDraw = false;
+  canvas.style.pointerEvents = "none";
+});
 </script>
 
 </body>
