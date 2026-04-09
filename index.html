@@ -247,33 +247,22 @@ shareBtn.onclick = async ()=>{
 
   // UIまとめて非表示
   uiLayer.style.display = "none";
-
-// ボックスのスタイルを固定して薄くならないようにする
-  box.style.transition = "none";
-  box.style.opacity = "1";
-  box.style.transform = "scale(1)";
-
-  // アニメーション終了を待つ代わりに 200ms 待機
-  await new Promise(r => setTimeout(r, 200));
-
-  // さらに描画完了待ち
-  for(let i=0;i<5;i++){
-    await new Promise(r => requestAnimationFrame(r));
-  }
+  box.style.transition = "none";       // アニメーション停止
+  box.style.opacity = "1";             // 完全表示
+  box.style.transform = "scale(1)";    // サイズ固定
 
   const canvas = await html2canvas(document.body, {
-    useCORS: true,
-    allowTaint: true,
-    backgroundColor: null,
-    logging: false,
-    scale: 2
+   useCORS: true,
+  allowTaint: true,
+  backgroundColor: null,
+  scale: 2
   });
   const img = canvas.toDataURL("image/png");
 
   // 保存
   const link = document.createElement("a");
   link.href = img;
-  link.download = "art.png";
+  link.download = "myart.png";
   link.click();
 
   // UI戻す
