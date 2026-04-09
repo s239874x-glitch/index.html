@@ -242,6 +242,12 @@ const shareBtn = document.getElementById("shareBtn");
   
   //シェアボタン消す
 shareBtn.onclick = async () => {
+  
+  const boxEl = document.querySelector(".box");
+  const prevTransform = boxEl.style.transform;
+  
+  boxEl.style.transform = "none";
+  
   shareBtn.style.display = "none";
   confettiCanvas.style.display = "none";
 
@@ -249,7 +255,7 @@ shareBtn.onclick = async () => {
   const screenshot = await html2canvas(document.body, {
     useCORS: true,
     backgroundColor: "#0a6b37",
-    scale: 1,  // ← ここ重要
+    scale: window.devicePixelRatio,  // ← ここ重要
     ignoreElements: (el) => el.id === "confetti" || el.id === "drawCanvas"
   });
 
@@ -278,7 +284,9 @@ shareBtn.onclick = async () => {
 
   confettiCanvas.style.display = "block";
   shareBtn.style.display = "inline-block";
-
+  
+  boxEl.style.transform = prevTransform;
+  
   // Twitter 共有
   const text = encodeURIComponent(
     "農工大美術部見つけた！🎨\n（保存したらくがきも一緒に投稿してみよう！）\n#農工大美術部\n"
