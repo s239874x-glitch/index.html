@@ -258,7 +258,8 @@ shareBtn.onclick = async () => {
     useCORS: true,
     backgroundColor: "#0a6b37",
     scale: 1,
-    ignoreElements: (el) => el.id === "confetti" || el.id === "drawCanvas"
+    ignoreElements: (el) =>
+  　["confetti","drawCanvas","uiLayer"].includes(el.id)
   });
 
   // 合成キャンバスを html2canvas と同じ解像度に
