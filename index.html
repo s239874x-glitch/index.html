@@ -266,6 +266,7 @@ let particles = [];
 let drawMode = false;
 let drawing = false;
 let enableDraw = false;
+let hue = 0;
 
 /* ===== 紙吹雪 ===== */
 
@@ -350,8 +351,12 @@ canvas.addEventListener("mousemove", (e)=>{
   const t = e.touches[0];
   ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
 
-  ctx.strokeStyle = "white";
-  ctx.lineWidth = 3;
+  // 🌈 レインボー
+  ctx.strokeStyle = `hsl(${hue}, 100%, 60%)`;
+  hue += 2;
+  if(hue > 360) hue = 0;
+
+  ctx.lineWidth = 2 + Math.sin(hue * 0.1) * 2;
   ctx.lineCap = "round";
   ctx.stroke();
 });
@@ -366,26 +371,51 @@ canvas.addEventListener("mouseleave", ()=>{
 
 /* ===== スマホ（長押しで描画） ===== */
 
-let touchTimer;
-
 canvas.addEventListener("touchstart", (e)=>{
-  e.preventDefault(); // ←これ重要
   if(!drawMode) return;
 
-  touchTimer = setTimeout(()=>{
-    enableDraw = true;
-    canvas.style.pointerEvents = "auto";
-    drawing = true;
+  e.preventDefault();
 
-    const rect = canvas.getBoundingClientRect();
-    const t = e.touches[0];
+  drawing = true;
+  canvas.style.pointerEvents = "auto";
 
-    ctx.beginPath();
-    ctx.moveTo(t.clientX - rect.left, t.clientY - rect.top);
+  const rect = canvas.getBoundingClientRect();
+  const t = e.touches[0];
 
-  }, 300); // 長押し判定
+  ctx.beginPath();
+  ctx.moveTo(t.clientX - rect.left, t.clientY - rect.top);
+
+}, { passive: false });
+
+
+canvas.addEventListener("touchmove", (e)=>{
+  if(!drawing) return;
+
+  e.preventDefault();
+
+  const rect = canvas.getBoundingClientRect();
+  const t = e.touches[0];
+
+  ctx.lineTo(t.clientX - rect.left, t.clientY - rect.top);
+
+  // 🌈 レインボー
+  ctx.strokeStyle = `hsl(${hue}, 100%, 60%)`;
+  hue += 2;
+  if(hue > 360) hue = 0;
+
+  ctx.lineWidth = 2 + Math.sin(hue * 0.1) * 2;;
+  ctx.lineCap = "round";
+  ctx.stroke();
+
+}, { passive: false });
+
+
+canvas.addEventListener("touchend", ()=>{
+  drawing = false;
+
+  // 通常操作に戻す
+  canvas.style.pointerEvents = "none";
 });
-
 canvas.addEventListener("touchmove", (e)=>{
   if(!drawing || !enableDraw) return;
 
