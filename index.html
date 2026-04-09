@@ -52,8 +52,8 @@ width:100%;
 height:100%;
 z-index:20;
 touch-action: none;
-/* ★スマホでは常に有効 */
-pointer-events:auto;
+/* ★最初は完全に無効 */
+pointer-events:none;
 }
 
 /* テキスト選択無効化 */
@@ -219,6 +219,7 @@ document.getElementById("gift").addEventListener("click", function(){
   opened = true;
 
   this.style.display = "none";
+  canvas.style.pointerEvents = "auto";
 
   const box = document.querySelector(".box");
   const wrapper = document.querySelector(".box-wrapper");
