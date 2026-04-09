@@ -249,12 +249,18 @@ shareBtn.onclick = async ()=>{
   // UIまとめて非表示
   uiLayer.style.display = "none";
 
-  // 描画安定待ち（これだけでOK）
-  await new Promise(r => requestAnimationFrame(r));
-  await new Promise(r => requestAnimationFrame(r));
+  // 描画完了待ち（重要：2→5フレームに増やす）
+  for(let i=0;i<5;i++){
+    await new Promise(r => requestAnimationFrame(r));
+  }
 
-  const canvas = await html2canvas(document.body);
-
+  const canvas = await html2canvas(document.body, {
+    useCORS: true,          // ★これ必須
+    allowTaint: true,
+    backgroundColor: null,  // 透過保持
+    logging: false,
+    scale: 2                // 高解像度
+  });
   const img = canvas.toDataURL("image/png");
 
   // 保存
