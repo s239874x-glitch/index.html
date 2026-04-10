@@ -249,7 +249,8 @@ shareBtn.onclick = async () => {
   boxEl.style.transform = "none";
   boxEl.style.animation = "none";
 　boxEl.style.opacity = "1";
-  
+  //ボックスをやっぱ消す
+  boxWrapper.style.display = "none";
   shareBtn.style.display = "none";
   confettiCanvas.style.display = "none";
   await new Promise(r => setTimeout(r, 50));
@@ -312,7 +313,8 @@ shareBtn.onclick = async () => {
   
   boxEl.style.transform = prevTransform;
   boxEl.style.animation = prevAnimation;
-  
+  //ボックスを戻す
+  boxWrapper.style.display = "block";
   // Twitter 共有
   const text = encodeURIComponent(
     "農工大美術部見つけた！🎨\n（保存したらくがきも一緒に投稿してみよう！）\n#農工大美術部\n\n"
