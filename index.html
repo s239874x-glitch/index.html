@@ -241,7 +241,8 @@ const shareBtn = document.getElementById("shareBtn");
   
   //シェアボタン消す
 shareBtn.onclick = async () => {
-  
+
+  const boxWrapper = document.querySelector(".box-wrapper");
   const boxEl = document.querySelector(".box");
   const prevTransform = boxEl.style.transform;
   const prevAnimation = boxEl.style.animation;
