@@ -269,8 +269,15 @@ shareBtn.onclick = async () => {
   // 背景を描画
   ctx.drawImage(screenshot, 0, 0);
   ctx.shadowColor = "black";
+  ctx.shadowBlur = 20;
   
-  //額縁
+  ctx.drawImage(
+  drawCanvas,
+  0,0,drawCanvas.width,drawCanvas.height,
+  0,0,finalCanvas.width,finalCanvas.height
+ );
+
+　//額縁
 　// グラデーション作成
   const grad = ctx.createLinearGradient(0, 0, finalCanvas.width, finalCanvas.height);
   grad.addColorStop(0, "#d4af37");
@@ -282,11 +289,6 @@ shareBtn.onclick = async () => {
   ctx.strokeStyle = grad;
   ctx.strokeRect(0, 0, finalCanvas.width, finalCanvas.height);
 
-  ctx.drawImage(
-  drawCanvas,
-  0,0,drawCanvas.width,drawCanvas.height,
-  0,0,finalCanvas.width,finalCanvas.height
- );
 
   /*落書きタイトル*/
  const fontSize = Math.min(finalCanvas.width * 0.08, 70);
