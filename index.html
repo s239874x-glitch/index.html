@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link href="https://fonts.googleapis.com/css2?family=Rubik+Glitch&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js"></script>
 <title>農工大???部</title>
 
 <style>
@@ -259,7 +257,7 @@ shareBtn.onclick = async () => {
     backgroundColor: "#0a6b37",
     scale: 1,
     ignoreElements: (el) =>
-  　["confetti","drawCanvas","uiLayer"].includes(el.id)
+      ["confetti","drawCanvas","uiLayer"].includes(el.id)
   });
 
   // 合成キャンバスを html2canvas と同じ解像度に
@@ -270,6 +268,15 @@ shareBtn.onclick = async () => {
 
   // 背景を描画
   ctx.drawImage(screenshot, 0, 0);
+  ctx.shadowColor = "black";
+  //額縁
+　ctx.shadowBlur = 20;
+
+　ctx.lineWidth = 30;
+  ctx.strokeStyle = "#8b5a2b";
+  ctx.strokeRect(0, 0, finalCanvas.width, finalCanvas.height);
+
+  ctx.shadowBlur = 0;
 
   ctx.drawImage(
   drawCanvas,
@@ -278,14 +285,14 @@ shareBtn.onclick = async () => {
  );
 
   /*落書きタイトル*/
-await document.fonts.load("40px 'Rubik Glitch'");
- ctx.fillStyle = "red";
- ctx.font = "40px 'Rubik Glitch'";
+ const fontSize = Math.min(finalCanvas.width * 0.08, 70);
+ ctx.fillStyle = "white";
+ ctx.font = `bold ${fontSize}px sans-serif`;
  ctx.textAlign = "center";
 
  ctx.shadowColor = "black";
  ctx.shadowBlur = 15;
- ctx.fillText('"MASTERPIECE"', finalCanvas.width / 2, finalCanvas.height/2);
+ ctx.fillText('"MY ART"', finalCanvas.width / 2, fontSize + 10);
 
   const img = finalCanvas.toDataURL("image/png");
 
@@ -303,7 +310,8 @@ await document.fonts.load("40px 'Rubik Glitch'");
   const text = encodeURIComponent(
     "農工大美術部見つけた！🎨\n（保存したらくがきも一緒に投稿してみよう！）\n#農工大美術部\n"
   );
-  const url = encodeURIComponent("https://x.com/nokoart_active");
+  const url1 = encodeURIComponent("https://x.com/nokoart_active\n");
+  const url2 = encodeURIComponent("https://s239874x-glitch.github.io/");
   window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank");
 };
 /* ========= Canvas ========= */
@@ -413,7 +421,7 @@ drawCanvas.onmousemove=(e)=>{
   drawCtx.lineTo(e.clientX-rect.left,e.clientY-rect.top);
 
   drawCtx.strokeStyle=`hsl(${hue},100%,60%)`;
-  hue=(hue + 2) % 360;
+  hue=(hue + 4) % 360;
 
   drawCtx.lineWidth=3;
   drawCtx.lineCap="round";
@@ -456,7 +464,7 @@ drawCanvas.ontouchmove=(e)=>{
   drawCtx.lineTo(t.clientX-rect.left,t.clientY-rect.top);
 
   drawCtx.strokeStyle=`hsl(${hue},100%,60%)`;
-  hue = (hue + 2) % 360;
+  hue = (hue + 4) % 360;
 
   drawCtx.lineWidth=3;
   drawCtx.lineCap="round";
